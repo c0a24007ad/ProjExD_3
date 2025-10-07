@@ -163,7 +163,7 @@ def main():
     for i in range(NUM_OF_BOMBS):  # NUM_OF_BOMBS個の爆弾を生成
         bombs.append(Bomb((255, 0, 0), 10))
     beams = []  # 追加機能2
-    score_num = 0  # 追加機能1
+    add_score = 0  # 追加機能1
     score = Score()  # 追加機能1
     clock = pg.time.Clock()
     tmr = 0
@@ -196,7 +196,7 @@ def main():
                     beams[j] = None  # 追加機能2
                     bombs[i] = None
                     bird.change_img(6, screen)
-                    score_num +=1  # 追加機能1
+                    add_score +=1  # 追加機能1
             beams = [beam for beam in beams if beam is not None]  # 追加機能2
         bombs = [bomb for bomb in bombs if bomb is not None]
         
@@ -207,7 +207,7 @@ def main():
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
-        score.update(score_num ,screen)  # 追加機能1
+        score.update(add_score ,screen)  # 追加機能1
         pg.display.update()
         tmr += 1
         clock.tick(50)

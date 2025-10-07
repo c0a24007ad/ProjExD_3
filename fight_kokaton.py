@@ -141,7 +141,7 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
-class Score:
+class Score:  # 追加機能1
     def __init__(self):
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
         color = (0, 0, 255)
@@ -162,10 +162,9 @@ def main():
     bombs = []
     for i in range(NUM_OF_BOMBS):  # NUM_OF_BOMBS個の爆弾を生成
         bombs.append(Bomb((255, 0, 0), 10))
-    
-    beam = None  # ゲーム初期化時にはビームは存在しない
-    score_num = 0
-    score = Score()
+    beams = []  # 追加機能2
+    score_num = 0  # 追加機能1
+    score = Score()  # 追加機能1
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -175,6 +174,7 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
                 beam = Beam(bird)
+                beams.append(beam)  # 追加機能2
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:
@@ -189,20 +189,25 @@ def main():
                 return
         
         for i, bomb in enumerate(bombs):
-            if beam is not None:
-                if beam.rct.colliderect(bomb.rct):
-                    score_num +=1
-                    beam, bombs[i] = None, None
+            for j, beam in enumerate(beams):  # 追加機能2
+                if check_bound(beam.rct) != (True, True):
+                    beams[j] = None
+                if beam.rct.colliderect(bomb.rct): 
+                    beams[j] = None  # 追加機能2
+                    bombs[i] = None
                     bird.change_img(6, screen)
+                    score_num +=1  # 追加機能1
+            beams = [beam for beam in beams if beam is not None]  # 追加機能2
         bombs = [bomb for bomb in bombs if bomb is not None]
+        
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-        if beam is not None:
+        for beam in beams:
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
-        score.update(score_num ,screen)
+        score.update(score_num ,screen)  # 追加機能1
         pg.display.update()
         tmr += 1
         clock.tick(50)
